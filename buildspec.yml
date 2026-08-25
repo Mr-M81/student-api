@@ -5,9 +5,8 @@ phases:
     runtime-versions:
       python: 3.12
     commands:
-      - echo Installing dependencies...
+      - echo Installing dependencies for student API only...
       - pip install -r requirements.txt -t student_api/
-      - pip install -r requirements.txt -t stream_processor/
 
   build:
     commands:
