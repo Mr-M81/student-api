@@ -1,0 +1,35 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      python: 3.12
+    commands:
+      - echo Installing dependencies...
+      - pip install -r requirements.txt -t student_api/
+      - pip install -r requirements.txt -t stream_processor/
+
+  build:
+    commands:
+      - echo Zipping student API...
+      - cd student_api && zip -r ../student-api.zip . && cd ..
+      - echo Zipping stream processor...
+      - cd stream_processor && zip -r ../stream-processor.zip . && cd ..
+
+  post_build:
+    commands:
+      - echo Deploying student API Lambda...
+      - aws lambda update-function-code
+          --function-name student-api
+          --zip-file fileb://student-api.zip
+          --region af-south-1
+      - echo Deploying stream processor Lambda...
+      - aws lambda update-function-code
+          --function-name stream-processor
+          --zip-file fileb://stream-processor.zip
+          --region af-south-1
+
+artifacts:
+  files:
+    - student-api.zip
+    - stream-processor.zip
