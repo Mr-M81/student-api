@@ -6,30 +6,34 @@ phases:
       python: 3.12
     commands:
       - echo Installing dependencies...
-      - pip install -r requirements.txt -t student_api/
-      - pip install -r requirements.txt -t stream_processor/
+      - pip install -r requirements.txt -t student-api/
+      - pip install -r requirements.txt -t stream-processor/
 
   build:
     commands:
-      - echo Zipping student API...
-      - cd student_api && zip -r ../student-api.zip . && cd ..
-      - echo Zipping stream processor...
-      - cd stream_processor && zip -r ../stream-processor.zip . && cd ..
+      - echo Zipping student API Lambda...
+      - cd student-api && zip -r ../student-api.zip . && cd ..
+      - echo Zipping stream processor Lambda...
+      - cd stream-processor && zip -r ../stream-processor.zip . && cd ..
 
   post_build:
     commands:
-      - echo Deploying student API Lambda...
+      - echo Deploying student-api Lambda...
       - aws lambda update-function-code
           --function-name student-api
           --zip-file fileb://student-api.zip
           --region af-south-1
-      - echo Deploying stream processor Lambda...
+      - echo Deploying stream-processor Lambda...
       - aws lambda update-function-code
           --function-name stream-processor
           --zip-file fileb://stream-processor.zip
           --region af-south-1
+      - echo Uploading Glue ETL script to S3...
+      - aws s3 cp glue-etl/glue_etl.py s3://isango-student-pipeline/scripts/glue_etl.py
+      - echo All deployments complete!
 
 artifacts:
   files:
     - student-api.zip
     - stream-processor.zip
+    - glue-etl/glue_etl.py
