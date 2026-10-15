@@ -29,11 +29,11 @@ phases:
           --zip-file fileb://stream-processor.zip
           --region af-south-1
       - echo Uploading Glue ETL script to S3...
-      - aws s3 cp glue-etl/glue_etl.py s3://isango-student-pipeline/scripts/glue_etl.py
+      - aws s3 cp glue-api/glue_etl.py s3://isango-student-pipeline/scripts/glue_etl.py
       - echo All deployments complete!
 
 artifacts:
   files:
     - student-api.zip
     - stream-processor.zip
-    - glue-etl/glue_etl.py
+    - glue-api/glue_etl.py
